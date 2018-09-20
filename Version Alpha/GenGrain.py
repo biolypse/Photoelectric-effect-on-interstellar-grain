@@ -12,7 +12,7 @@ from GRF_routines import addGRF
 
 # Tunable parameters
 # - Main parameters
-N = 50              # size of the grain image
+N = 900              # size of the grain image
 sigma_dens = 0.1    # Width of the density distribution
 beta = 5.0           # Slope of the power spectrum (=probability density function=PDF) for k>Kmin
 
@@ -22,7 +22,7 @@ beta_in = 4          # Slope of PDF between k=0 and Kmin
 Npad = 30            # Padding around the map to get rid of the peak near k=0
 Adens = 1.           # Mean density - should not impact dust grain
 
-doplot = 1           # Visual check of grain calculation: 0= desactivated, 1= only final plot, 2= animation of search for the main group + final plot
+doplot = 0          # Visual check of grain calculation: 0= desactivated, 1= only final plot, 2= animation of search for the main group + final plot
 
 
 # while loop to make sure the peak is sufficiently close to the center of the cube

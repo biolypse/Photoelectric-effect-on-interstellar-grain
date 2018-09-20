@@ -6,16 +6,19 @@ from matplotlib import pyplot as plt
 import numpy as np
 from random import uniform
 ################################################################################
-################################# FUNCTIONS ####################################
+################################# LOADING ######################################
 ################################################################################
 def load(name):
-    return np.loadtxt(name)
+    return np.loadtxt(name, dtype = 'int')
 
+################################################################################
+################################# CALCUL #######################################
+################################################################################
 
-def non_uniform_generator_exp():
+def non_uniform_generator_exp(para):
     #x = []
     #for i in range(100000):
-    a = (np.random.exponential(c.LA))
+    a = np.random.exponential(para)
         #x.append(a)
         #i += 1
     # plt.hist(x, bins = 1000)
@@ -40,11 +43,14 @@ def non_uniform_generator_th():
     # plt.plot(x, fx, '.')
     # plt.show()
 
-
-def x_contact(row):
+################################################################################
+################################# TREATMENT ####################################
+################################################################################
+def contact(row):
     if sum(row) == 0:
-        print("Le photon n'a pas rencontré le grain")
+        #print("Le photon n'a pas rencontré le grain")
         exit = True
+        print("Le photon n'a pas rencontré le grain")
         return None, exit
     else:
         exit = False
@@ -56,23 +62,20 @@ def x_contact(row):
         return i, exit
 
 
-def x_absorption(da, nb_rows, grain_size, contact_position):
-    pixel_size = grain_size / len(nb_rows)
-    print("taille d'un pixel", pixel_size)
+def absorption(da, pixel_size, grain_size, contact_position):
     if c.LA < grain_size:
-        absorption = np.round_(da / pixel_size)
-        absorption_pixel = int(contact_position + absorption)
-        return(absorption_pixel)
+        da_in_pixel = np.round_(da / pixel_size)
+        absorption_pixel = int(contact_position + da_in_pixel)
+        return absorption_pixel
     else :
-        print("Il n'y a pas d'absorption")
+        print("Il n'y a pas eu d'absorption")
 
 
-# def eject_electron(ejection_test, grain_size):
-#     ejection = True
-#     nc = ((4 / 3) * np.pi * (grain_size ** 3) * c.RHO_C) / (c.M_C)
-#     gap = 4.4 + (c.Z_ELECTRON + 0.5) * (11.1) / (nc**(1 / 3))
-#     if ejection_test > nc:
-#         ejection = True
-#     else:
-#         ejection = False
-#     return ejection
+def eject_electron(ejection_test, grain_size):
+    nc = (np.pi * (grain_size ** 2) * c.RHO_C) / (c.M_C)
+    gap = 4.4 + (c.Z_ELECTRON + 0.5) * (25.1) / (nc**(1 / 2))
+    if ejection_test > gap:
+        ejection = True
+    else:
+        ejection = False
+    return ejection
