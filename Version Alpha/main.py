@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+@author : Nicolas
+"""
 ################################################################################
 ################################### IMPORT #####################################
 ################################################################################
@@ -6,47 +10,77 @@ import constants as c
 from matplotlib import pyplot as plt
 import numpy as np
 import random as rand
+
 ################################################################################
 ################################ INITIALIZATION ################################
 ################################################################################
-angles = [0, 45, 90, 135, 180, 225, 270, 315]
-ejection_direction = rand.choice(angles)
-ejection_test = f.non_uniform_generator_th()
-energy = rand.uniform(3, 16)
-da = f.non_uniform_generator_exp(c.LA)
-de = f.non_uniform_generator_exp(c.LE)
-grain_size = 2 * (rand.uniform(c.GRAIN_MIN_RADIUS, c.GRAIN_MAX_RADIUS))
-matrix = f.load("Grain_N500_S0p1_B5p0.txt")
+matrix = f.load("Grain_N50_S0p1_B5p0.txt")
 nb_rows, nb_column = matrix.shape
-pixel_size = grain_size / nb_rows
-
-
-
-
+diameter = f.pixel_size_calculator(matrix)
+grain_size = 2 * (rand.uniform(c.GRAIN_MIN_RADIUS, c.GRAIN_MAX_RADIUS))
+pixel_size = grain_size / diameter
 
 ################################################################################
-photon_init_position = rand.randrange(0, nb_rows)
-row_photon = matrix[photon_init_position]
-
-
+################################## TREATMENT ###################################
 ################################################################################
-############################# FIRST PRINT TESTS ################################
-################################################################################
-#print("La taille du grain est de : ", grain_size, "m")
-#print("La taille des pixels est de : ", pixel_size)
-#print("le photon arrive sur la ligne n°", photon_init_position)
+with open("Resultats.txt", "a") as file :
+    for i in range(100000):
+        da = f.non_uniform_generator_exp(c.LA)
+        de = f.non_uniform_generator_exp(c.LE)
+        da_in_pixel = int(da / pixel_size)
+        de_in_pixel = int(de / pixel_size)
+        de_in_pixel_diag = int((de / (np.sqrt(2) * pixel_size)))
 
-################################################################################
-contact_pixel, exit = f.contact(row_photon)
+        energy = rand.uniform(3, 16)
 
-if not exit :
-    absorption_pixel = f.absorption(da, pixel_size, grain_size, contact_pixel)
-    is_ejected = f.eject_electron(ejection_test, grain_size)
+        angles = [0, 45, 90, 135, 180, 225, 270, 315]
+        ejection_direction = rand.choice(angles)
+        ejection_energy = f.non_uniform_generator_th()
 
+        photon_init_position = rand.randrange(0, nb_rows)
+        row_photon = matrix[photon_init_position]
+        contact_pixel, touch = f.contact(row_photon)
 
-################################################################################
-############################# SECOND PRINT TESTS ###############################
-################################################################################
-    #print("Le photon est absorbé à la colonne n°", absorption_pixel)
-    #print("distance parcouru par l'électron", de)
-    #print("L'électron est éjecté? ",is_ejected)
+################################# PRINT TEST N°1 ###############################
+        #print("La taille du grain est de : ", grain_size, "m")
+        #print("Le diamètre du grain en pixel est de : ", diameter)
+        #print("La taille des pixels est de : ", pixel_size, "m")
+        #print("le photon arrive sur la ligne n°", photon_init_position)
+
+        if touch :
+            absorption_column, is_absorbed = f.absorption(da, pixel_size, grain_size, contact_pixel)
+            if is_absorbed:
+                is_ejected, ionization_energy = f.eject_electron(ejection_energy, grain_size)
+                if is_ejected:
+                    try :
+                        is_free = f.freedom(ejection_direction, de, de_in_pixel, pixel_size, absorption_column, photon_init_position, matrix)
+                    except IndexError:
+                        pass
+                    if is_free:
+                        kinetic_energy = energy - ionization_energy
+                        file.write("{}\n".format(kinetic_energy))
+
+################################################## PRINT TEST N°2 ####################################################
+                        #print("Le photon rencontre le grain à la colonne n°", contact_pixel)
+                        #print("Le photon est absorbé à la colonne n°", absorption_column)
+                        #print("La distance parcouru par l'électron est de : ", de, "m sois ", de_in_pixel, "pixels")
+                        #print("La distance hypothétiquement parcouru en diagonale en pixel est de", de_in_pixel_diag)
+                        #print("L'électron est éjecté? True/False : ",is_ejected)
+                        #print("L'électron est éjecté selon un angle de : ", ejection_direction, "°")
+
+                    else :
+                        stock = -3
+                        print("terminé car l'électron s'est recombiné avec le grain")
+                        file.write("{}\n".format(stock))
+                else :
+                    stock = -2
+                    print("terminé car pas d'éjection")
+                    file.write("{}\n".format(stock))
+            else :
+                stock = -1
+                print("terminé car pas d'absorption")
+                file.write("{}\n".format(stock))
+        else :
+            stock = -1
+            print("terminé car pas de rencontre")
+            file.write("{}\n".format(stock))
