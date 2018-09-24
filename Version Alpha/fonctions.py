@@ -59,7 +59,6 @@ def contact(row):
     if sum(row) == 0:
         #print("Le photon n'a pas rencontré le grain")
         touch = False
-        print("Le photon n'a pas rencontré le grain")
         return None, touch
     else:
         touch = True
@@ -79,7 +78,6 @@ def absorption(da, pixel_size, grain_size, contact_position):
         return absorption_pixel, is_absorbed
     else :
         is_absorbed = False
-        print("Il n'y a pas eu d'absorption")
         return None, is_absorbed
 
 
@@ -135,3 +133,13 @@ def freedom(ejection_direction, de, de_in_pixel, pixel_size, absorption_column, 
             return False
         else :
             return True
+
+################################################################################
+################################# EXPLOITATION #################################
+################################################################################
+def histogramme(name):
+    results = np.loadtxt(name)
+    plt.hist(results, bins = 30, range = (0,12), color = "red", edgecolor = "black")
+    plt.xlabel("Energy (eV)")
+    plt.ylabel("Number of photo_electron")
+    plt.show()

@@ -23,7 +23,7 @@ pixel_size = grain_size / diameter
 ################################################################################
 ################################## TREATMENT ###################################
 ################################################################################
-with open("Resultats.txt", "a") as file :
+with open("results.txt", "a") as file :
     for i in range(100000):
         da = f.non_uniform_generator_exp(c.LA)
         de = f.non_uniform_generator_exp(c.LE)
@@ -70,17 +70,15 @@ with open("Resultats.txt", "a") as file :
 
                     else :
                         stock = -3
-                        print("terminé car l'électron s'est recombiné avec le grain")
                         file.write("{}\n".format(stock))
                 else :
                     stock = -2
-                    print("terminé car pas d'éjection")
                     file.write("{}\n".format(stock))
             else :
                 stock = -1
-                print("terminé car pas d'absorption")
                 file.write("{}\n".format(stock))
         else :
             stock = -1
-            print("terminé car pas de rencontre")
             file.write("{}\n".format(stock))
+
+f.histogramme("results.txt")
