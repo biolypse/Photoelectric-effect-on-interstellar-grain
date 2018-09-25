@@ -139,7 +139,7 @@ def freedom(ejection_direction, de, de_in_pixel, pixel_size, absorption_column, 
 ################################################################################
 def histogramme(name):
     results = np.loadtxt(name)
-    plt.hist(results, bins = 30, range = (0,12), color = "red", edgecolor = "black")
+    plt.hist(results, bins = 25, range = (0,12), color = "red", edgecolor = "black")
     plt.xlabel("Energy (eV)")
     plt.ylabel("Number of photo_electron")
     plt.show()

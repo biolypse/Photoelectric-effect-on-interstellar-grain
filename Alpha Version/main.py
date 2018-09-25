@@ -17,14 +17,14 @@ import random as rand
 matrix = f.load("Grain_N50_S0p1_B5p0.txt")
 nb_rows, nb_column = matrix.shape
 diameter = f.pixel_size_calculator(matrix)
-grain_size = 2 * (rand.uniform(c.GRAIN_MIN_RADIUS, c.GRAIN_MAX_RADIUS))
+grain_size = 2 * (c.GRAIN_MAX_RADIUS)
 pixel_size = grain_size / diameter
 
 ################################################################################
 ################################## TREATMENT ###################################
 ################################################################################
 with open("results.txt", "a") as file :
-    for i in range(100000):
+    for i in range(1000000):
         da = f.non_uniform_generator_exp(c.LA)
         de = f.non_uniform_generator_exp(c.LE)
         da_in_pixel = int(da / pixel_size)
@@ -57,6 +57,7 @@ with open("results.txt", "a") as file :
                     except IndexError:
                         pass
                     if is_free:
+                        print("freeeeeeeedom")
                         kinetic_energy = energy - ionization_energy
                         file.write("{}\n".format(kinetic_energy))
 
