@@ -24,13 +24,13 @@ pixel_size = grain_size / diameter
 ################################## TREATMENT ###################################
 ################################################################################
 with open("results.txt", "a") as file :
-    for i in range(1000000):
+    for i in range(1000):
         da = f.non_uniform_generator_exp(c.LA)
         de = f.non_uniform_generator_exp(c.LE)
+        print("de = ",de)
         da_in_pixel = int(da / pixel_size)
         de_in_pixel = int(de / pixel_size)
         de_in_pixel_diag = int((de / (np.sqrt(2) * pixel_size)))
-
         energy = rand.uniform(3, 16)
 
         angles = [0, 45, 90, 135, 180, 225, 270, 315]
@@ -44,7 +44,7 @@ with open("results.txt", "a") as file :
 ################################# PRINT TEST N°1 ###############################
         #print("La taille du grain est de : ", grain_size, "m")
         #print("Le diamètre du grain en pixel est de : ", diameter)
-        #print("La taille des pixels est de : ", pixel_size, "m")
+        print("La taille des pixels est de : ", pixel_size, "m")
         #print("le photon arrive sur la ligne n°", photon_init_position)
 
         if touch :
