@@ -10,6 +10,9 @@ import random as rand
 import constants as c
 from matplotlib import pyplot as plt
 import numpy as np
+import time
+import sys
+
 ################################################################################
 ################################ INITIALIZATION ################################
 ################################################################################
@@ -21,11 +24,15 @@ touche = 0
 absorption = 0
 ejection = 0
 libere = 0
+
 ################################################################################
 ################################## TREATMENT ###################################
 ################################################################################
 with open("results.txt", "a") as file :
     for i in range(1000000):
+        j = i / 10000
+        sys.stdout.write("\r%s%%" % j )
+        sys.stdout.flush()
         da = f.non_uniform_generator_exp(c.LA)
         de = f.non_uniform_generator_exp(c.LE)
         da_in_pixel = int(da / pixel_size)
@@ -33,13 +40,11 @@ with open("results.txt", "a") as file :
         de_in_pixel_diag = int((de / (np.sqrt(2) * pixel_size)))
         photon_init_position = rand.randrange(0, dim1)
         row_photon = matrix[photon_init_position]
-
         angle = rand.randrange(0,360)
 
-
-
         contact_pixel, touch = f.contact(row_photon)
-        ################################# PRINT TEST N°1 ###############################
+
+################################################################ PRINT TEST N°1 ####################################################
         #print("Le photon arrive sur la ligne", photon_init_position, "Le photon rencontre le grain à la colonne n°", contact_pixel)
         #print("La taille des pixels est de : ", pixel_size, "m")
         #print("Le photon parcours", da,"m")
@@ -55,8 +60,7 @@ with open("results.txt", "a") as file :
             if is_absorbed :
                 absorption += 1
                 #print("Le photon est absorbé")
-                energy = f.photon_energy()
-                #energy = rand.uniform(3,16)
+                energy = rand.uniform(3,15)
                 Y = 0.5 * (1 + np.tanh((energy - c.E0) / 2))
                 pile_face = rand.uniform(0,1)
                 if pile_face <= Y:
@@ -71,7 +75,6 @@ with open("results.txt", "a") as file :
                         is_free = f.freedom(de, angle, pixel_size, matrix, photon_init_position, absorption_column)
                     except IndexError :
                         pass
-
                     if is_free :
                         libere += 1
                         #print("FREEEEEEEEEEEEEEEDOM")
@@ -82,26 +85,21 @@ with open("results.txt", "a") as file :
                         stock = -3
                         file.write("{}\n".format(stock))
                 else :
-                    #print("L'électron n'est pas éjecté")
+                    # print("L'électron n'est pas éjecté")
                     stock = -2
                     file.write("{}\n".format(stock))
             else :
-                #print("Le photon n'a pas été absorbé")
+                # print("Le photon n'a pas été absorbé")
                 stock = -1
                 file.write("{}\n".format(stock))
         else :
-            #print("Le photon n'a pas touché")
+            # print("Le photon n'a pas touché")
             stock = -1
             file.write("{}\n".format(stock))
 
+################################## PRINT TEST N°2###############################
+print("Nombres de photon qui ont touché le grain : ", touche)
+print("Nombres de photon qui ont été absorbé : ", absorption)
+print("Nombres d'électron qui ont été créé : ", ejection)
+print("Nombres d'électron qui sont sortis du grain", libere)
 f.histogramme("results.txt")
-print("touche = ", touche)
-print("absorption", absorption)
-print("eject", ejection)
-print("libére", libere)
-
-
-
-# plt.imshow(matrix)
-# plt.gray()
-# plt.show()

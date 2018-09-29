@@ -72,6 +72,42 @@ def absorption(da, pixel_size, GRAIN_SIZE, contact_position, matrix, photon_init
 
 
 
+# def freedom(de, angle, matrix, photon_init_position, absorption_column, pixel_size):
+#     rad = m.radians(angle)
+#     step = de / 10000
+#     lenght = 0
+#     hole = 0
+#     dist = [0]
+#     total_dist = 0
+#     while lenght < de:
+#         lenght += step
+#         if 0 <= angle <90:
+#             ligne = photon_init_position + int((np.sin(rad) * lenght) / pixel_size)
+#             colonne = absorption_column - int((np.cos(rad) * lenght) / pixel_size)
+#         elif 90 <= angle < 180:
+#             ligne = photon_init_position + int((np.sin(rad) * lenght) / pixel_size)
+#             colonne = absorption_column + int((np.cos(rad) * lenght) / pixel_size)
+#
+#         elif 180 <= angle < 270:
+#             ligne = photon_init_position - (int((np.sin(rad) * lenght) / pixel_size))
+#             colonne = int((np.cos(rad) * lenght) / pixel_size) + absorption_column
+#         else :
+#             ligne = photon_init_position - int((np.sin(rad) * lenght) / pixel_size)
+#             colonne = absorption_column - int((np.cos(rad) * lenght) / pixel_size)
+#         if matrix[ligne, colonne] == hole:
+#             dist.append(lenght)
+#             hole = (hole + 1) % 2
+#
+#     try :
+#         for i in range(0, len(dist), 2):
+#             total_dist += dist[i+1] - dist[i]
+#     except :
+#         pass
+#     return total_dist
+
+
+
+
 def freedom(de, angle, pixel_size, matrix, photon_init_position, absorption_column):
     rad = m.radians(angle)
     colonne = int((np.cos(rad) * de) / pixel_size)
