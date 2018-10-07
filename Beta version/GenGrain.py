@@ -12,8 +12,8 @@ from GRF_routines import addGRF
 
 # Tunable parameters
 # - Main parameters
-N = 20            # size of the grain image
-sigma_dens = 1.5   # Width of the density distribution
+N = 100            # size of the grain image
+sigma_dens = 0.1   # Width of the density distribution
 beta = 3.0           # Slope of the power spectrum (=probability density function=PDF) for k>Kmin
 
 # - Secondary parameters

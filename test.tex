@@ -1,0 +1,54 @@
+\documentclass{cours}
+
+\graphicspath{}
+
+\begin{document}
+\dominitoc
+\begin{titlepage}
+\begin{center}
+
+% Upper part of the page. The '~' is needed because only works if a paragraph has started.
+\includegraphics[width=0.35\textwidth]{/home/korgan/texmf/tex/latex/cours/logo}~\\[1cm]
+
+\textsc{\LARGE Université de Franche-Comté}\\[1.5cm]
+
+\textsc{\Large }\\[0.5cm]
+
+% Title
+\HRule \\[0.4cm]
+
+{\huge \bfseries Nom du Projet\\
+Sujet du Projet \\[0.4cm] }
+
+\HRule \\[3cm]
+
+% Author and supervisor
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Auteur:}\\
+Premier \textsc{Auteur}\\
+Deuxième \textsc{Auteur}\\
+Troisième \textsc{Auteur}\\
+Quatrième \textsc{Auteur}
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Client:} \\
+Prénom \textsc{Nom}\\
+\emph{Référent:} \\
+Prénom \textsc{Nom}
+\end{flushright}
+\end{minipage}
+
+\vfill
+
+% Bottom of the page
+{\large \today}
+
+\end{center}
+\end{titlepage}
+\newpage
+\tableofcontents
+\newpage
+\end{document}

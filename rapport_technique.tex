@@ -1,0 +1,122 @@
+\documentclass{rapport}
+
+\graphicspath{{Images/}}
+
+\begin{document}
+\begin{titlepage}
+\begin{center}
+
+% Upper part of the page. The '~' is needed because only works if a paragraph has started.
+\includegraphics[width=0.35\textwidth]{logo.png}~\\[1cm]
+
+\textsc{\LARGE Université de Franche-Comté}\\[1.5cm]
+
+\textsc{\Large }\\[5cm]
+
+% Title
+\textbf{\HRule }\\[0.4cm]
+
+{\huge \bfseries Rapport Technique\\
+Photoelectric effect on interstellar grain\\[0.4cm] }
+
+\HRule \\[3cm]
+% Author and supervisor
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Auteur:}\\
+\textsc{Nicolas BELLEMONT}\\
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Date de fin de développement:} \\
+\textsc{07/10/2018 Version : Gold V.2}\\
+\emph{Language de programmation:} \\
+\textsc{Python}
+\end{flushright}
+\end{minipage}
+
+
+\vfill
+
+% Bottom of the page
+{\large \today}
+
+\end{center}
+\end{titlepage}
+\newpage
+
+\section{Liste des fichiers}
+\begin{itemize}
+  \item Simulation.py : fichier principal, à exécuter pour lancer les simulations.
+  \item Functions.py : fichier contenant toutes les fonctions utilisés par le programme.
+  \item Constant.py : fichier contenant les valeurs des constantes necessaire au programme.
+\end{itemize}
+
+
+
+
+
+
+\section{Spécification fonctionnelle du programme}
+
+\subsection{But du programme}
+Le programme présenté dans ce rapport à pour but d'étudier l'effet photoélectrique sur un grain de matière interstellaire.\nl
+Son fonctionnement se découpe en deux étapes, d'abord il génère une matrice de 0 et de 1 représentant le grain de poussière(que l'ont assimilera à du carbone), puis il simule l'arrivé sur ce grain d'un certains nombres de photon interstellaire. \nl
+Au final ce programme permet de voir l'influence de la géométrie d'un grain de poussière sur l’effet photoélectrique.
+
+\subsection{Données d'entrées}
+\begin{itemize}
+  \item number\_of\_grain : entier, détermine combien de grain seront générés pour les différentes exploitation.
+  \item sigma : réel, représente la densité de la distribution du grain (en pratique sers à jouer sur le degré de "fractalité" d'un grain).
+  \item N : entier, nombre de photon à envoyer sur les grain lors des simulations.
+\end{itemize}
+
+\subsection{Sortie du programme}
+Le programme ressort une série d'histogramme correspondant à la simulation choisi par l'utilisateur, ces histogramme représentent le nombre de photo-électron qui se sont échappés du grain avec les énergies correspondantes.
+
+\subsection{Conditions spécifique d'utilisation}
+
+
+
+\section{Fonctionnement interne du programme}
+
+\subsection{Description des modèles physiques}
+
+
+\subsection{Description des algoritmes de calculs scientifiques utilisés}
+
+
+\subsection{Liste des éléments costitutif du programme}
+
+
+\subsection{Diagramme fonctionnel du programme}
+
+
+
+
+
+\section{Fiabilité du programme, démarche qualité}
+\section{Exemples de résultats du programme}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

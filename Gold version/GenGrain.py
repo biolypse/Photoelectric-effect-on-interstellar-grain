@@ -1,6 +1,5 @@
 import numpy as np
-import pylab as pl
-
+import matplotlib.pyplot as pl
 from GRF_routines import addGRF
 
 
@@ -12,7 +11,7 @@ from GRF_routines import addGRF
 
 # Tunable parameters
 # - Main parameters
-N = 100              # size of the grain image
+N = 60              # size of the grain image
 sigma_dens = 0.9    # Width of the density distribution
 beta = 3.0           # Slope of the power spectrum (=probability density function=PDF) for k>Kmin
 
@@ -37,17 +36,17 @@ while ((mmax[0]<N*tol) | (mmax[0]>N*(1-tol)) | (mmax[1]<N*tol) | (mmax[1]>N*(1-t
 
    # Search the location of the max value
    mmax = np.nonzero(cube==np.amax(cube))
-   print mmax
+   print(mmax)
    ii += 1
    if (ii>1000):
-      print "Failed generating a GRF with this tolerance value:", tol
-      print "Try a lower value. It should be between 0 (very tolerant) and 0.49999 (very tough)."
+      print("Failed generating a GRF with this tolerance value:", tol)
+      print("Try a lower value. It should be between 0 (very tolerant) and 0.49999 (very tough).")
       exit()
 
 
 # Roll the cube to put the max at the center
-cube = np.roll(cube, N/2-mmax[0][0], axis=0)
-cube = np.roll(cube, N/2-mmax[1][0], axis=1)
+cube = np.roll(cube, N//2-mmax[0][0], axis=0)
+cube = np.roll(cube, N//2-mmax[1][0], axis=1)
 
 # Apodize the cube
 I, J = np.indices(np.shape(cube))
@@ -57,7 +56,7 @@ cube *= np.exp(-Rad/(2*sig**2))
 
 # Compute the location of the mass center
 cdm = [np.sum(J*cube)/np.sum(cube),np.sum(I*cube)/np.sum(cube)]
-print cdm
+print(cdm)
 
 # Roll the cube to put the mass center at the center
 cube = np.roll(cube, int(N/2-cdm[0]), axis=0)
@@ -74,7 +73,7 @@ def group(grain, x0,y0):
    goon = 1
    progress = np.zeros(np.shape(grain))
    progress[x0,y0] = 2
-   if (doplot==2): pl.ion()
+   if (doplot==2): plt.ion()
    while (goon==1):
       goon = 0
       m = np.nonzero(progress==2)   # search last included friends
@@ -99,42 +98,22 @@ def group(grain, x0,y0):
                   if (progress[inds[0],inds[1]]==0): # not found before
                      progress[inds[0],inds[1]] = 3   # 3 for freshly identified
                      goon = 1
-      if (doplot==2): pl.imshow(progress, origin='low', cmap='bone', interpolation='nearest')
-      if (doplot==2): pl.pause(0.0001)
+      if (doplot==2): plt.imshow(progress, origin='low', cmap='bone', \
+                                interpolation='nearest')
+      if (doplot==2): plt.pause(0.0001)
       progress[m] = 1
       progress[np.nonzero(progress==3)] = 2
 
    progress[np.nonzero(progress>1)] = 1
-   pl.ioff()
+   plt.ioff()
    return progress
 
 mmax = np.nonzero(cube==np.amax(cube))
 grain2 = group(grain, mmax[0][0], mmax[1][0])
 
 # Write down the grain image in ASCII format (very inefficient format, but easy to control)
-np.savetxt("Grain_N%i_S%ip%i_B%ip%i.txt" % (N, int(sigma_dens), \
+np.savetxt("Grain_Files/Grain_N%i_S%ip%i_B%ip%i.txt" % (N, int(sigma_dens), \
                                                int((sigma_dens-int(sigma_dens))*10), \
                                                int(beta), \
                                                int((beta-int(beta))*10)), \
                                                grain2, fmt='%i')
-
-
-if (doplot>=1):
-   pl.figure(figsize=(20,10))
-   pl.subplot(131)
-   pl.title('Original gaussian density distribution')
-   pl.plot(cdm[0], cdm[1], '+k')
-   pl.imshow(np.log10(cube), origin='low', interpolation='nearest')
-   pl.colorbar(shrink=0.4)
-
-   pl.subplot(132)
-   pl.title('Threshold cut of the original distribution')
-   pl.imshow(grain, origin='low', cmap='bone', interpolation='nearest')
-   pl.colorbar(shrink=0.4)
-
-   pl.subplot(133)
-   pl.title('Final Grain - only the central group')
-   pl.imshow(grain2, origin='low', cmap='bone', interpolation='nearest')
-   pl.colorbar(shrink=0.4)
-
-   pl.show()

@@ -10,8 +10,6 @@ import random as rand
 import constants as c
 from matplotlib import pyplot as plt
 import numpy as np
-import time
-import sys
 
 ################################################################################
 ################################ INITIALIZATION ################################
@@ -30,9 +28,6 @@ libere = 0
 ################################################################################
 with open("results.txt", "a") as file :
     for i in range(1000000):
-        j = i / 10000
-        sys.stdout.write("\r%s%%" % j )
-        sys.stdout.flush()
         da = f.non_uniform_generator_exp(c.LA)
         de = f.non_uniform_generator_exp(c.LE)
         da_in_pixel = int(da / pixel_size)

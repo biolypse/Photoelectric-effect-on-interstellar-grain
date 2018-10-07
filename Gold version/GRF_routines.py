@@ -1,15 +1,14 @@
 #!/usr/bin/python
 
-from numpy import *
 from matplotlib.pylab import *
 import numpy as np
-
+import numpy.fft
 
 
 def addGRF(cube, sigma_dens, Adens, beta, Npad, Kmin, beta_in, smooth=None):
 
    ### Get shape and size of the cube
-   dims = shape(cube)
+   dims = np.shape(cube)
    nAxes = len(dims)   # number of axes
 
 
@@ -46,19 +45,19 @@ def addGRF(cube, sigma_dens, Adens, beta, Npad, Kmin, beta_in, smooth=None):
    # Multiply by a smoothing Gaussian
    if (smooth):
       Ksmooth = float(dims[0])/smooth
-      FourierCube *= exp(-(Kradius)**2/(2*Ksmooth**2))
+      FourierCube *= np.exp(-(Kradius)**2/(2*Ksmooth**2))
 
    # Compute the density cube by inverse Fourier transform the Fourier cube
-   RealCube = fftn(ifftshift(FourierCube))
+   RealCube = np.fft.fftn(np.fft.ifftshift(FourierCube))
 
    Density = ones(dims, float32)
    Indices = []
    for i in range(nAxes):
-      Indices.append(slice(Npad/2,Cubedims[i]-Npad/2-(Npad%2)))
+      Indices.append(slice(Npad//2,Cubedims[i]-Npad//2-(Npad%2)))
    Indices = tuple(Indices)
 
-   Density = exp( sigma_dens*real(RealCube[Indices]) )
-   Density /= mean(Density.flatten())
+   Density = np.exp( sigma_dens*real(RealCube[Indices]) )
+   Density /= np.mean(Density.flatten())
 
    return Density * Adens
 
@@ -138,7 +137,7 @@ def addGRF_to_CRTfile(modelname, sigma_dens, Adens, beta, Npad, Kmin, beta_in):
    fp = file(filename, 'rb')
 
    nX, nY, nZ = fromfile(fp, int32, 3)
-   print nX, nY, nZ
+   # print(nX, nY, nZ)
 
    cube = fromfile(fp, float32, nX*nY*nZ)
    Cube = cube.reshape((nZ, nY, nX))
@@ -210,7 +209,3 @@ def addGRF_to_CRTfile(modelname, sigma_dens, Adens, beta, Npad, Kmin, beta_in):
       dims.tofile(fp)
       GalaxyCube.tofile(fp)
       fp.close()
-
-
-
-

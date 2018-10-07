@@ -11,4 +11,4 @@ M_C = 12.0107*1.66e-27
 N_C = (np.pi * GRAIN_SIZE**2 * RHO_C) / (M_C)
 IONIZATION = 4.4 + (6 + 0.5) * (25.1) / (N_C**(0.5))
 
-COLOR = ["red", "blue", "yellow"]
+COLOR = ["blue", "red", "yellow"]
