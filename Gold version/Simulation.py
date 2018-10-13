@@ -1,0 +1,125 @@
+# -*- coding: utf-8 -*-
+"""
+@author : Nicolas
+"""
+import fonctions as f
+from matplotlib import pyplot as plt
+import numpy as np
+import constants as c
+
+################################################################################
+#initializing false values to trigger the verifications
+choice = "0"
+number_of_grain = "initialization"
+sigma_dens = "initialization"
+fractale_transit = "initialization"
+sphere_transit = "initialization"
+################################################################################
+
+while choice not in "1234": #Verify if the choice is one of the four expected
+    choice = str(input("""Which simulation do you want to realise ? \n1 : Several different grains but with the same fractal properties\n2 : A fractal grain and a spherical grain\n3 : Several grains with different fractal properties\n4 : Several grain of different sizes but with the same fractal properties\n"""))
+
+if choice == "1":
+    while str(number_of_grain) not in "0123456789": #Verify if the number is an positive interger
+        number_of_grain = input("How much grain do you want to compare?\n")
+    number_of_grain = int(number_of_grain) #Cast the string into an integer
+
+    while f.is_int(sigma_dens) == False or float(sigma_dens) < 0 : #Verify if the sigma parameter is a positive float
+        sigma_dens = input("Which value do you want to give to sigma (the fractal parameter)?\n")
+    sigma_dens = float(sigma_dens) #Cast the string into a float
+
+    S, p = f.main_function(number_of_grain, 0, sigma_dens, choice) #Calling the main function
+
+    for i in range(number_of_grain): #Loop that create and plot histogram for each grain
+        results = np.loadtxt("results_Grain_N100_S{}p{}_B3p0_{}.txt".format(S, p, i))
+        plt.subplot(1,number_of_grain,i+1) #Craeting subplot in order to have hist side by side
+        plt.hist(results, bins = 30, range = (0,13), edgecolor = "black", color = "red", label = "grain n°{}".format(i))
+        plt.xlabel("Energy (eV)")
+        plt.ylabel("Number of photo_electron")
+        plt.legend(loc="upper left", bbox_to_anchor=[0, 1], fancybox=True)
+    plt.suptitle("Different grain with the same fractale parameters")
+    plt.show()
+
+
+
+elif choice == "2":
+    sigma_dens = []
+    legend = []
+    number_of_grain = 2
+    while f.is_int(fractale_transit) == False or float(fractale_transit) < 0 : #Verify if sigma if a positive float
+        fractale_transit = input("Which value do you want to assign to sigma for the fractal grain ?(Recommended : > 0.4)\n")
+    sigma_dens.append(float(fractale_transit)) #Adding sigma for a fractal grain to the sigma list
+
+    while f.is_int(sphere_transit) == False or float(sphere_transit) < 0 :
+        sphere_transit = input("Which value do you want to assign to sigma for the spherical grain ?(Recommended : < 0.4)\n")
+    sigma_dens.append(float(sphere_transit)) #Adding sigma for a spherical grain to the sigma list
+
+    sigma_dens = sorted(sigma_dens, reverse=True) #Sorted in descending order
+
+    S, p = f.main_function(number_of_grain, 0, sigma_dens, choice) #Calling the main function
+
+
+    for i in range(number_of_grain): #Hist are ploted one over the other
+        results = np.loadtxt("results_Grain_N100_S{}p{}_B3p0.txt".format(S[i], p[i]))
+        plt.hist(results, bins = 30, range = (0,13), edgecolor = "black", label = "sigma = {}".format(sigma_dens[i]))
+        plt.xlabel("Energy (eV)")
+        plt.ylabel("Number of photo_electron")
+    plt.legend()
+    plt.show()
+
+
+
+elif choice == "3":
+    sigma_dens = []
+    while str(number_of_grain) not in "0123456789": #Verify if the number is an positive interger
+        number_of_grain = input("How much grain do you want to compare?\n")
+    number_of_grain = int(number_of_grain) #Cast the string into an integer
+
+    for i in range(number_of_grain):
+        transit = input("Which value do you want to assign to the grain n°{}?\n".format(i))
+        while f.is_int(transit) == False or float(transit) < 0 :
+            transit = input("Which value do you want to assign to the grain n°{}?\n".format(i))
+        sigma_dens.append(float(transit))
+        i += 1
+
+    sigma_dens = sorted(sigma_dens, reverse=True)
+    S, p = f.main_function(number_of_grain, 0, sigma_dens, choice)
+
+    for i in range(number_of_grain):
+        results = np.loadtxt("results_Grain_N100_S{}p{}_B3p0.txt".format(S[i], p[i]))
+        plt.hist(results, bins = 30, range = (0,13), color = c.COLOR[i], edgecolor = "black", label = "sigma = {}".format(sigma_dens[i]))
+        plt.xlabel("Energy (eV)")
+        plt.ylabel("Number of photo_electron")
+    plt.legend()
+    plt.show()
+
+
+
+elif choice == "4":
+    GRAIN_RADIUS = []
+    while str(number_of_grain) not in "0123456789":
+        number_of_grain = input("How much grain do you want to compare?\n")
+    number_of_grain = int(number_of_grain)
+
+    while f.is_int(sigma_dens) == False or float(sigma_dens) < 0 :
+        sigma_dens = input("Which value do you want to assign to sigma ?\n")
+    sigma_dens = float(sigma_dens)
+
+    for i in range(number_of_grain):
+        transit = input("Which value do you want to assign to the grain radius n°{}?\n".format(i))
+        while f.is_int(transit) == False or float(transit) < 0 :
+            transit = input("Which value do you want to assign to the grain radius n°{}?\n".format(i))
+
+        GRAIN_RADIUS.append(float(transit))
+
+    GRAIN_RADIUS = sorted(GRAIN_RADIUS)
+    S, p = f.main_function(number_of_grain, GRAIN_RADIUS, sigma_dens, choice)
+
+    for i in range(number_of_grain):
+        results = np.loadtxt("results_Grain_N100_S{}p{}_B3p0_{}.txt".format(S, p, i))
+        plt.hist(results, bins = 30, range = (0,13), edgecolor = "black", label = "Radius = {}".format(GRAIN_RADIUS[i]))
+        plt.xlabel("Energy (eV)")
+        plt.ylabel("Number of photo_electron")
+    plt.suptitle("Different grain size with the same fractale parameters")
+    plt.legend()
+    plt.show()
