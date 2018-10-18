@@ -1,0 +1,5 @@
+Please use python3
+
+The Main file is the one called Simulation.py
+
+For the rest follow the instructions on the terminal.

@@ -1,0 +1,242 @@
+\documentclass{rapport}
+
+\graphicspath{{Images/}}
+
+\begin{document}
+\begin{titlepage}
+\begin{center}
+
+% Upper part of the page. The '~' is needed because only works if a paragraph has started.
+\includegraphics[width=0.35\textwidth]{logo.png}~\\[1cm]
+
+\textsc{\LARGE Université de Franche-Comté}\\[1.5cm]
+
+\textsc{\Large }\\[0.1cm]
+\begin{center}
+  \includegraphics[scale=0.3]{couv}
+\end{center}
+% Title
+\textbf{\HRule }\\[0.4cm]
+
+{\huge \bfseries Rapport Technique\\
+Photoelectric effect on interstellar grain\\[0.4cm] }
+
+\HRule \\[1cm]
+% Author and supervisor
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Auteur:}\\
+\textsc{Nicolas BELLEMONT}\\
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Référent:} \\
+\textsc{Julien Montillaud}\\
+\emph{Date de fin de développement:} \\
+\textsc{Version Gold : 15/10/2018}\\
+\emph{Format du code:} \\
+\textsc{Code source à éxecuter}
+\emph{Language de programmation:} \\
+\textsc{Python3}\\
+\end{flushright}
+\end{minipage}
+
+
+\vfill
+
+% Bottom of the page
+{\large \today}
+
+\end{center}
+\end{titlepage}
+\newpage
+\section{Liste des fichiers}
+\begin{itemize}
+  \item[$\bullet$] Simulation.py : fichier principal, à exécuter pour lancer les simulations.
+  \item[$\bullet$] Functions.py : fichier contenant toutes les fonctions utilisés par le programme.
+  \item[$\bullet$] Constant.py : fichier contenant les valeurs des constantes nécessaire au programme.
+  \item[$\bullet$] Dépôt GitHub : \url{https://github.com/biolypse/Photoelectric-effect-on-interstellar-grain}
+\end{itemize}
+
+
+
+
+
+
+\section{Spécification fonctionnelle du programme}
+
+\subsection{But du programme}
+Le programme présenté dans ce rapport à pour but d'étudier l'effet de chauffage photoélectrique dû aux grains de poussière interstellaire. Ce phénomène se produit lorsqu'un photon de type UV est absorbé par un grain de poussière et que cette absorption déclenche l'éjection d'un électron à grande vitesse. Par la suite l'électron va transférer son énergie cinétique au gaz par le biais de collisions et ainsi chauffer l'ensemble.\nl
+Le fonctionnement de ce programme se découpe en deux étapes. Pour commencer il y a génération d'une matrice de 0 et de 1 représentant le grain de poussière (les 1 et les 0 correspondant respectivement à des emplacements occupé et non occupé par le grain).\\Une fois la matrice représentative générée, le programme simule l'arrivée d'un certains nombres de photon (par défaut 1000000) sur ce grain et les différents événement qui peuvent s'en suivre(absorption de photon, émission d'électron...).\nl
+Ce programme permet donc de simuler le phénomène de chauffage photoélectrique et ainsi d'observer la proportion d'électron libéré par ce processus de chauffage.
+
+\subsection{Données d'entrées}
+\begin{itemize}
+  \item[$\bullet$] choice : entier, permet à l'utilisateur de choisir quelle simulation il veut effectuer.
+  \item[$\bullet$] number\_of\_grain : entier, détermine combien de grain seront générés pour l'exploitation choisi.
+  \item[$\bullet$] sigma\_dens : réel, représente la densité de la distribution du grain (en pratique sers à faire varier le degré de "fractalité" d'un grain).
+\end{itemize}
+
+\subsection{Sortie du programme}
+Le programme ressort une série d'histogrammes correspondant à la simulation choisi par l'utilisateur. Chaque histogramme représentent le nombre de photon-électron qui se sont échappés du grain pour les différents paramètres choisi, ainsi que les énergies correspondantes.
+
+\subsection{Conditions spécifique d'utilisation}
+\begin{itemize}
+  \item[$\bullet$] Obligation d'avoir dans le répertoire de travail des dossiers nommés \textit{Grain\_Files} et \textit{Results\_Files} afin de stocker les grains générés ainsi que les fichiers \textit{.txt} correspondants.
+  \item[$\bullet$] Dysfonctionnement possible : Selon la géométrie du grain, il est possible qu'un photon-électron parcours, une distance plus grande que celle le séparant du bord de la matrice représentant le grain. Dans cette situation il survient une erreur de type Out Of Bond.
+\end{itemize}
+
+
+\section{Fonctionnement interne du programme}
+
+\subsection{Description des modèles physiques}
+Le grain de poussière interstellaire réduit à deux dimensions, est modélisé par une matrice de 0 et de 1. Les 1 représentent les zones de l'image occupés par le grain et les 0 les zones de vide. Pour ce programme nous considérerons qu'il est intégralement composé de carbone.
+\nl
+La géométrie du grain est contrôlé par le biais d'un paramètre qui permet d'obtenir des formes plus ou moins fractale.
+\nl
+Comme les simulations se font sur des grains aux propriétés géométriques obtenus aléatoirement, il à été décidé que tous les photons de la simulation arriveraient depuis le même coté de la matrice représentante, cela équivaut à dire que les photons arrivent sur le grain depuis toutes les directions de l'espace.
+\nl
+En ce qui concerne l'éjection des photon-électrons, dans le modèle utilisé, si ceux ci rencontre sur leurs trajectoire un trou (un 0) on considère qu'il se sont échappés du grain. Il est possible que ce "trou" ne soit dû qu'à la géométrie du grain et que l'électron puisse à nouveau rentrer dans ce dernier et continuer sa course mais la fonction permettant de prendre cela en compte ralentissait énormément le programme\footnote{Cela correspond à la fonction commenté freedom dans le fichier de fonction}. Il à donc été convenue que si l'électron rencontrait un 0 sur son chemin il s'échappait du grain.
+\nl
+En ce qui concerne les énergies, si un électron à réussi à s'échapper du grain l'énergie cinétique qui lui reste est inscrite dans le fichier de résultat. Si le photon n'a pas touché le grain ou s'il n'est pas absorbé, la valeur $-1$ est rentré dans le fichier, si un électron n'est pas éjecté suite à l'absorption c'est la valeur $-2$ et si le photon-électron s'est fait ré-absorbé dans le grain c'est $-3$. Ces valeurs nous permettent de voir la proportion des photons qui n'ont pas participé à l’effet photoélectrique et à quel stade ils se sont arrêtés.
+\nl
+Les travaux de Bakes \& Tielens\footnote{The Photoelectric heating mechanism for very small graphitic grains and polycyclic aromatic hydrocarbons} sont à la base des données numériques utilisées dans les simulations.
+
+
+\subsection{Liste des éléments constitutif du programme}
+Sera explicité dans cette partie le fichier principal ainsi que deux fonctions très importantes, pour le reste veuillez consulter les doc-strings présente en en-tête de chaque fonctions.\nl
+
+\underline{\textit{Simulation.py : }}\\ Demande à l'utilisateur de choisir une simulation à réaliser, puis les paramètres avec lesquels réaliser la simulation en question. \nl
+Par la suite un grain est généré sur la base des paramètres rentrés. Cela signifie que n’importe quel nombre de grains de n’importe quelle combinaison de paramètres peut être crée puis analysés.\nl
+
+\underline{\textit{GenGrain : }}\\GenGrain est une fonction qui permet de générer une matrice de 0 et de 1 représentant un grain interstellaire. Elle prend en entrée les variables suivantes :\\
+\begin{itemize}
+ \item[$\bullet$] sigma\_dens : réel, représente la densité de la distribution du grain
+ \item[$\bullet$] number\_of\_grain : entier, détermine combien de grain seront générés pour l'exploitation choisi.
+ \item[$\bullet$] test : booléen, permet de savoir sous quel format enregistrer le fichier contenant la matrice
+\end{itemize}
+\nl
+Cette fonction provient initialement d'un programme donné par le professeur référent\footnote{Mr. Julien Montillaud}. Le code à été intégralement traduit de python2 vers python3 puis adapté afin de devenir une fonction.
+\nl
+\underline{\textit{Main : }}\\ Main est une fonction qui simule l'arrivée de plusieurs photons sur le grain puis leurs comportement à l'intérieur de celui-ci. Elle prend en entrée les variables suivantes :\\
+\begin{itemize}
+  \item[$\bullet$] number\_of\_grain : entier, détermine combien de grain seront générés pour l'exploitation choisi.
+  \item[$\bullet$] sigma\_dens : réel, représente la densité de la distribution du grain (en pratique sers à faire varier le degré de "fractalité" d'un grain).
+  \item[$\bullet$] GRAIN\_RADIUS : réel, taille effective du grain interstellaire en mètres.
+  \item[$\bullet$] choice : entier, choix de la simulation à effectuer
+\end{itemize}
+\nl
+Cette fonction à un comportement légèrement différent en fonctions de la simulation choisi. Pour les simulations 1 et 4 comme les grains ont les mêmes propriétés fractale et que le nom des fichiers est généré en fonction de ces propriétés, la fonction traite des fichiers dont le nom se termine par un \textit{\_i} ou i est le numéro du $i^{ième}$ grain généré. Ormis cette différence d’appellation, la fonction à le même comportement peut importe la simulation choisie \textbf{[\ref{diagramme}]}
+
+\nl
+\underline{\textit{Données et variables internes : }}
+\begin{itemize}
+  \item[$\bullet$] absorption\_column : entier, colonne dans laquelle le photon est absorbé.
+  \item[$\bullet$] angle : entier, angle d'éjection (en dégrée) du photon électron par rapport à la direction d'arrivé du photon.
+  \item[$\bullet$] contact\_pixel : entier, colonne dans lequel le photon à rencontré le grain.
+  \item[$\bullet$] da : réel, distance parcouru par le photon à l’intérieur du grain.
+  \item[$\bullet$] de : réel, distance parcouru par le photon électron.
+  \item[$\bullet$] energy : réel, valeur de l'énergie du photon incident.
+  \item[$\bullet$] dim1/dim2 : entier, dimension de la matrice du grain.
+  \item[$\bullet$] GRAIN\_SIZE : réel, taille du grain en mètre.
+  \item[$\bullet$] is\_absorded : booléen, si le photon à été absorbé ou non.
+  \item[$\bullet$] is\_ejected : booléen, si l'électron est éjecté ou non.
+  \item[$\bullet$] is\_free : booléen, si l'électron est sorti du grain ou non.
+  \item[$\bullet$] kinetic\_energy : réel, énergie cinétique de l'électron après être sorti du grain.
+  \item[$\bullet$] matrix : matrice, matrice représentante du grain.
+  \item[$\bullet$] p : entier, partie décimale du paramètre sigma.
+  \item[$\bullet$] parameter : réel, paramètre du générateur non uniforme suivant une loi exponentielle.
+  \item[$\bullet$] photon\_init\_position : entier, ligne de la matrice sur laquelle arrive le photon.
+  \item[$\bullet$] pixel\_size : réel, taille d'un "pixel" (0 ou 1) en mètre.
+  \item[$\bullet$] row\_photon : matrice, vecteur contenant la ligne d'arrivé du photon.
+  \item[$\bullet$] S : entier, partie entière du paramètre sigma.
+\end{itemize}
+
+\subsection{Dépendance à des fonctions, objet issus de bibliothèques externe}
+Pour ce programme les bibliothèques suivantes ont été utilisées :
+\begin{itemize}
+  \item[$\bullet$] Numpy
+  \item[$\bullet$] Matplotlib
+  \item[$\bullet$] Random
+  \item[$\bullet$] Math
+\end{itemize}
+
+\subsection{Diagramme fonctionnel du programme}
+\begin{figure}
+  \center
+  \includegraphics[scale=0.5]{schema}
+  \caption{Diagramme fonctionnel du programme}
+  \label{diagramme}
+\end{figure}
+
+\newpage
+\section{Fiabilité du programme, démarche qualité}
+La principale démarche qualité fut de comparer le code à ceux des personnes travaillant sur le même sujet afin de déceler des divergences et des potentielles erreur de programmation.
+\nl
+Comme il n'y avait aucun résultat expérimentaux sur lesquels nous pouvions nous appuyer, la compréhension scientifique du phénomène photo-électrique relève plus de l'interprétation que de la certitude.
+\nl
+\section{Exemples de résultats du programme}
+\subsection{Quelques exemples de test réalisé avec le code}
+  \begin{figure}
+    \center
+    \includegraphics[scale=0.5]{simu1}
+    \caption{Première simulation : 3 grains simulés avec le même paramètre, sigma = 0.4}
+    \label{simu1}
+  \end{figure}
+
+  \begin{figure}
+    \center
+    \includegraphics[scale=0.5]{simu2}
+    \caption{Deuxième simulation : Un grain fractale (sigma = 1.0) et un grain sphérique (sigma = 0.2)}
+    \label{simu2}
+  \end{figure}
+
+  \begin{figure}
+    \center
+    \includegraphics[scale=0.5]{simu3}
+    \caption{Troisième simulation : 3 grains avec différents paramètres de fractalité}
+    \label{simu3}
+  \end{figure}
+
+\begin{figure}
+  \center
+  \includegraphics[scale=0.5]{simu4}
+  \caption{Quatrième simulation : 3 différentes tailles de grain}
+  \label{simu4}
+\end{figure}
+
+\newpage
+\subsection{Interprétation physiques des résultats}
+La répétitions des différentes simulations à permis d'en arriver aux conclusions suivantes :
+\\
+\begin{itemize}
+  \item[$\bullet$] Lorsque plusieurs grains sont générés à partir des mêmes propriétés fractales, seule la géométrie "visuelle" diffère. Cela se traduit par le fait que le nombre de photon-électron qui se sont échappés est du même ordre de grandeur pour chaque grain \textbf{[\ref{simu1}]}. Le phénomène photoélectrique ne dépend pas de la variation géométrique du grain.
+  \\
+  \item[$\bullet$] Plus un grain est fractale plus il permet l'échappement de photon-électron \textbf{[\ref{simu2}]}\textbf{[\ref{simu3}]}. Cela est dû au fait que la structure fractale permet plus facilement à un électron de d'atteindre un potentiel bord du grain et donc de s'en échapper. \\A contrario si le grain tend à être sphérique, peut importe où l'électron est émis il devra, dans la majeur partie du temps, traverser l'entièreté du grain, de ce fait il voit la probabilité de se faire ré-absorbé augmenter de manière significative.
+  \\
+  \item[$\bullet$] Plus la taille effective du grain est grande et plus la probabilité que l'électron se fasse absorbé est grande \textbf{[\ref{simu4}]}. En effet peu importe la géométrie du grain (fractale ou sphérique) étant donné que l'électron doit parcourir une certaine distance une fois émis, si le grain deviens trop grand l'électron se fera absorbé.
+\end{itemize}
+
+\nl
+Pour conclure il ressort que le phénomène photoélectrique est intimement corrélé à deux choses. Premièrement à la complexité de la géométrie du grain, un grain fractale favorisera plus l'effet photoélectrique qu'un grain sphérique. Deuxièmement à la taille du grain, plus celui ci sera grand et moins l'effet photoélectrique se manifestera.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
