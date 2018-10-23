@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-@author : Nicolas
-"""
+# license: CC BY-SA
+# author: Nico
+# version: 1.0
+# email: nico.bellemont@gmail.com
 
 import constants as c
 from matplotlib import pyplot as plt
@@ -15,10 +17,12 @@ import sys
 ################################################################################
 ################################# GRAIN GENERATOR ##############################
 ################################################################################
-def GenGrain(sigma_dens, number_of_grain=0, test = False):
+
+
+def GenGrain(sigma_dens, number_of_grain=0, test=False):
     # Tunable parameters
     # - Main parameters
-    N = 100           #size of the grain image
+    N = 100           # size of the grain image
     # sigma_dens = 0.9     Width of the density distribution
     beta = 3.0           # Slope of the power spectrum (=probability density function=PDF) for k>Kmin
 
@@ -136,6 +140,8 @@ def GenGrain(sigma_dens, number_of_grain=0, test = False):
 ################################################################################
 ############################## CALCUL FUNCTION #################################
 ################################################################################
+
+
 def non_uniform_generator_exp(parameter):
     """
     Generate a random number following an exponential law of probability
@@ -151,6 +157,8 @@ def non_uniform_generator_exp(parameter):
 ################################################################################
 ############################ TREATMENT FUNCTION ################################
 ################################################################################
+
+
 def is_int(s):
     """
     Verify if a string is possiblebly convertible into a float
@@ -165,6 +173,7 @@ def is_int(s):
         return True
     except ValueError:
         return False
+
 
 def contact(row):
     """
@@ -187,7 +196,8 @@ def contact(row):
         return i, touch
 
 
-def absorption(da, pixel_size, GRAIN_SIZE, contact_pixel, matrix, photon_init_position):
+def absorption(da, pixel_size, GRAIN_SIZE, contact_pixel, matrix,
+               photon_init_position):
     """
     Determine if and where the photon is absorbe in the grain
 
@@ -204,8 +214,8 @@ def absorption(da, pixel_size, GRAIN_SIZE, contact_pixel, matrix, photon_init_po
     """
     if c.LA < GRAIN_SIZE:
         da_in_pixel = int(da / pixel_size)
-        absorption_pixel = int(contact_pixel + da_in_pixel) #Column where the photon is absorbed
-        if matrix[photon_init_position, absorption_pixel] == 1: #Verify if the absorption column is inside the grain
+        absorption_pixel = int(contact_pixel + da_in_pixel)  # Column where the photon is absorbed
+        if matrix[photon_init_position, absorption_pixel] == 1:  # Verify if the absorption column is inside the grain
             is_absorbed = True
             return absorption_pixel, is_absorbed
         else:
@@ -250,7 +260,8 @@ def absorption(da, pixel_size, GRAIN_SIZE, contact_pixel, matrix, photon_init_po
 #     return total_dist
 
 
-def freedom(de, angle, pixel_size, matrix, photon_init_position, absorption_column):
+def freedom(de, angle, pixel_size, matrix, photon_init_position,
+            absorption_column):
     """
     Determine is the photon electron escape from the grain or not
 
@@ -265,9 +276,9 @@ def freedom(de, angle, pixel_size, matrix, photon_init_position, absorption_colu
         A booleen : True if the photon electron escape Flase else
     """
     rad = m.radians(angle)
-    colonne = int((abs(np.cos(rad)) * de) / pixel_size) #Absolute variation of the column number
-    ligne = int((abs(np.sin(rad)) * de) / pixel_size) #Absolute variation of the ligne number
-    #Check if th arrival pixel is in the grain (1) or outside (0)
+    colonne = int((abs(np.cos(rad)) * de) / pixel_size)  # Absolute variation of the column number
+    ligne = int((abs(np.sin(rad)) * de) / pixel_size)  # Absolute variation of the ligne number
+    # Check if th arrival pixel is in the grain (1) or outside (0)
     if 0 < angle <= 90:
         if matrix[photon_init_position - ligne, absorption_column + colonne] == 0:
             return True
@@ -293,6 +304,8 @@ def freedom(de, angle, pixel_size, matrix, photon_init_position, absorption_colu
 ################################# MAIN FUNCTION ################################
 ################################################################################
 ################################################################################
+
+
 def main_function(number_of_grain, GRAIN_RADIUS, sigma_dens, choice):
     """
     Function that send a certains number of photon in the matrix symbolizing the
@@ -315,19 +328,21 @@ def main_function(number_of_grain, GRAIN_RADIUS, sigma_dens, choice):
     p = []
     for j in range(number_of_grain):
         if choice == 1 or choice == 4:
-            S = int(sigma_dens) #Stock the entier part of sigma
+            S = int(sigma_dens)  # Stock the entier part of sigma
             wait = str(sigma_dens)
-            wait = wait.split(".") #Split the string at the character "."
-            p = wait[1] #Stock the decimal part of sigma
-            GenGrain(sigma_dens, j, True) #Generate a grain with the choosen sigma
-            matrix = np.loadtxt("Grain_Files/Grain_N100_S{}p{}_B3p0_{}.txt".format(S, p, j))
+            wait = wait.split(".")  # Split the string at the character "."
+            p = wait[1]  # Stock the decimal part of sigma
+            GenGrain(sigma_dens, j, True)  # Generate a grain with the choosen sigma
+            matrix = np.loadtxt("Grain_Files/Grain_N100_S{}p{}_B3p0_{}.txt"
+                                .format(S, p, j))
         else:
-            S.append(int(sigma_dens[j])) #Stock the entier part of sigma
+            S.append(int(sigma_dens[j]))  # Stock the entier part of sigma
             wait = str(sigma_dens[j])
-            wait = wait.split(".") #Split the string at the character "."
-            p.append(wait[1]) #Stock the decimal part of sigma
-            GenGrain(sigma_dens[j]) #Generate a grain with the choosen sigma
-            matrix = np.loadtxt("Grain_Files/Grain_N100_S{}p{}_B3p0.txt".format(S[j], p[j]))
+            wait = wait.split(".")  # Split the string at the character "."
+            p.append(wait[1])  # Stock the decimal part of sigma
+            GenGrain(sigma_dens[j])  # Generate a grain with the choosen sigma
+            matrix = np.loadtxt("Grain_Files/Grain_N100_S{}p{}_B3p0.txt"
+                                .format(S[j], p[j]))
 
         dim1, dim2 = matrix.shape
 
@@ -337,26 +352,29 @@ def main_function(number_of_grain, GRAIN_RADIUS, sigma_dens, choice):
             else:
                 GRAIN_SIZE = c.GRAIN_RADIUS * 2
 
-            pixel_size = GRAIN_SIZE / dim1 #Determines the size of the pixels
-            with open("Results_Files/results_Grain_N100_S{}p{}_B3p0_{}.txt".format(S, p, j), "w") as file: #Open/Create a txt file which will contains the energies
+            pixel_size = GRAIN_SIZE / dim1  # Determines the size of the pixels
+            with open("Results_Files/results_Grain_N100_S{}p{}_B3p0_{}.txt"
+                      .format(S, p, j), "w") as file:  # Open/Create a txt file which will contains the energies
                 for i in range(1000000):
-                    da = non_uniform_generator_exp(c.LA) #distance traveled by the photon
-                    de = non_uniform_generator_exp(c.LE) #distance traveled by the electron
-                    photon_init_position = rand.randrange(0, dim1) #input line of the photon
+                    da = non_uniform_generator_exp(c.LA)  # distance traveled by the photon
+                    de = non_uniform_generator_exp(c.LE)  # distance traveled by the electron
+                    photon_init_position = rand.randrange(0, dim1)  # input line of the photon
                     row_photon = matrix[photon_init_position]
                     angle = rand.randrange(0, 360)
-                    contact_pixel, touch = contact(row_photon) #Determine the contact column photon/grain
+                    contact_pixel, touch = contact(row_photon)  # Determine the contact column photon/grain
 
                     if touch:
                         try:
-                            absorption_column, is_absorbed = absorption(da, pixel_size, GRAIN_SIZE, contact_pixel, matrix, photon_init_position)
-                        except IndexError: #Avoid some rare error when the photon is absorbed outside the matrix
+                            absorption_column, is_absorbed = absorption(da,
+                            pixel_size, GRAIN_SIZE, contact_pixel, matrix,
+                            photon_init_position)
+                        except IndexError:  # Avoid some rare error when the photon is absorbed outside the matrix
                             pass
 
                         if is_absorbed:
-                            energy = rand.uniform(3, 15) #Energy of the incident photon
-                            Y = 0.5 * (1 + np.tanh((energy - c.E0) / 2)) #Energy gap to cross to eject an electron
-                            pile_face = rand.uniform(0, 1) #Choose randomly is the electron is ejected
+                            energy = rand.uniform(3, 15)  # Energy of the incident photon
+                            Y = 0.5 * (1 + np.tanh((energy - c.E0) / 2))  # Energy gap to cross to eject an electron
+                            pile_face = rand.uniform(0, 1)  # Choose randomly is the electron is ejected
 
                             if pile_face <= Y:
                                 is_ejected = True
@@ -365,32 +383,35 @@ def main_function(number_of_grain, GRAIN_RADIUS, sigma_dens, choice):
 
                             if is_ejected:
                                 try:
-                                    is_free = freedom(de, angle, pixel_size, matrix, photon_init_position, absorption_column)
-                                except IndexError: #Avoid some rare error when the electron go outside the matrix
+                                    is_free = freedom(de, angle, pixel_size,
+                                                      matrix, photon_init_position,
+                                                      absorption_column)
+                                except IndexError:  # Avoid some rare error when the electron go outside the matrix
                                     pass
 
                                 if is_free:
-                                    kinetic_energy = energy - c.IONIZATION #kinetic energy of the electron who escape
+                                    kinetic_energy = energy - c.IONIZATION  # kinetic energy of the electron who escape
                                     file.write("{}\n".format(kinetic_energy))
 
                                 else:
-                                    stock = -3 #Number to write if the electron doesn't escape
+                                    stock = -3  # Number to write if the electron doesn't escape
                                     file.write("{}\n".format(stock))
                             else:
-                                stock = -2 #Number to write if the electron isn't ejected
+                                stock = -2  # Number to write if the electron isn't ejected
                                 file.write("{}\n".format(stock))
                         else:
-                            stock = -1 #Number to write if the photon isn't absorbed
+                            stock = -1  # Number to write if the photon isn't absorbed
                             file.write("{}\n".format(stock))
                     else:
-                        stock = -1 #Number to write if the photon isn't absorbed
+                        stock = -1  # Number to write if the photon isn't absorbed
                         file.write("{}\n".format(stock))
 
-        #According to the simulation choice some small adjustment are made, especially on how to name the files
+        # According to the simulation choice some small adjustment are made, especially on how to name the files
         else:
             GRAIN_SIZE = c.GRAIN_RADIUS * 2
             pixel_size = GRAIN_SIZE / dim1
-            with open("Results_Files/results_Grain_N100_S{}p{}_B3p0.txt".format(S[j], p[j]), "w") as file:
+            with open("Results_Files/results_Grain_N100_S{}p{}_B3p0.txt"
+                      .format(S[j], p[j]), "w") as file:
                 for i in range(1000000):
                     da = non_uniform_generator_exp(c.LA)
                     de = non_uniform_generator_exp(c.LE)
@@ -401,7 +422,9 @@ def main_function(number_of_grain, GRAIN_RADIUS, sigma_dens, choice):
 
                     if touch:
                         try:
-                            absorption_column, is_absorbed = absorption(da, pixel_size, GRAIN_SIZE, contact_pixel, matrix, photon_init_position)
+                            absorption_column, is_absorbed = absorption(da,
+                            pixel_size, GRAIN_SIZE, contact_pixel, matrix,
+                            photon_init_position)
                         except IndexError:
                             pass
 
@@ -417,7 +440,8 @@ def main_function(number_of_grain, GRAIN_RADIUS, sigma_dens, choice):
 
                             if is_ejected:
                                 try:
-                                    is_free = freedom(de, angle, pixel_size, matrix, photon_init_position, absorption_column)
+                                    is_free = freedom(de, angle, pixel_size,
+                                    matrix, photon_init_position, absorption_column)
                                 except IndexError:
                                     pass
 
